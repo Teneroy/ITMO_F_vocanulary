@@ -4,12 +4,6 @@
 
 #include "Vocabulary.h"
 
-openvac::Vocabulary::Vocabulary()
-{
-    _arr = nullptr;
-    _size = 0;
-}
-
 openvac::Vocabulary::~Vocabulary()
 {
     MAKENULL();
@@ -17,75 +11,133 @@ openvac::Vocabulary::~Vocabulary()
 
 void openvac::Vocabulary::MAKENULL()
 {
-    if(_arr != nullptr)
+    //DeleteArr
+}
+
+void openvac::Vocabulary::DELETE(const char * x)
+{
+    int B = SIZE / 2; //повтор код????
+    int key = getKey(x);
+    int hs = hash(key, B);
+    if(!searchArEl(hs))
+        return;
+    node * temp;
+    if(strcmp(_arr[hs].data, x) != 0)
     {
-        //_arr = deleteArr(_arr);
+        if(_arr[hs].next == nullptr)
+            return;
+        if(strcmp(_arr[hs].next -> data, x) != 0)
+        {
+            temp = searchClassEl(_arr[hs].next, x);
+            if(temp == nullptr)
+                return;
+            node * cur = temp -> next;
+            temp -> next = cur -> next;
+            delete cur;
+        } else
+        {
+            temp = _arr[hs].next;//
+            _arr[hs].next = _arr[hs].next -> next;//
+            delete temp; //ПОВТОР КОД
+        }
+    } else
+    {
+        if(_arr[hs].next != nullptr)
+        {
+            strcpy(_arr[hs].data, _arr[hs].next -> data);
+            temp = _arr[hs].next;//
+            _arr[hs].next = _arr[hs].next -> next;//
+            delete temp; //ПОВТОР КОД
+        } else
+        {
+            delete[] _arr[hs].data;
+            _arr[hs].data = nullptr;
+        }
     }
 }
 
 void openvac::Vocabulary::INSERT(const char * x)
 {
-    if(_arr == nullptr)
-    {
-        _size = 1;
-        _arr = new node[1];
-        _arr[0].data = new char[20]; //ПОВТОР КОД!
-        strcpy(_arr[0].data, x);
-        return;
-    }
-    int B = _size / 10;
+    //std::cout << "{source start: " << x << "}" << std::endl;
+    int B = SIZE / 2; //повтор код????
     int key = getKey(x);
     int hs = hash(key, B);
+    std::cout << "{source: " << x << "}, {key: " << key << "}, {B: " << B << "}, " << "{hash: " << hs << "}" << std::endl;
     if(searchArEl(hs))
     {
-        node * temp = searchClassEl(hs);
-        if(temp != nullptr)
-            return;
+        if(_arr[hs].next != nullptr)
+        {
+            if(strcmp(_arr[hs].next -> data, x) == 0)
+                return;
+            node * temp = searchClassEl(_arr[hs].next, x);
+            if(temp != nullptr)
+                return;
+        }
         _arr[hs].next = add_to_list(_arr[hs].next, x);
         return;
     }
-    _arr[hs].data = new char[20]; //ПОВТОР КОД!
+    _arr[hs].data = new char[20];
     strcpy(_arr[hs].data, x);
-}
-
-void openvac::Vocabulary::READFILE(const char * filename)
-{
-    std::cout << "READ START " << filename << std::endl;
-    std::ifstream myReadFile;
-    myReadFile.open(filename);
-
-    if (myReadFile.is_open())
-    {
-        myReadFile >> _size;
-        std::cout << "READ SIZE " << _size << std::endl;
-        _arr = new node[_size];
-        int i = 0;
-        char data[20];
-        while (!myReadFile.eof())
-        {
-            myReadFile >> data;
-            _arr[i].data = new char[20];
-            strcpy(_arr[i].data, data);
-            i++;
-        }
-        myReadFile.close();
-    }
 }
 
 void openvac::Vocabulary::PRINT() const
 {
     node * iter;
-    for(int i = 0; i < _size; ++i)
+    for(int i = 0; i < SIZE; ++i)
     {
-        std::cout << _arr[i].data << std::endl;
-        if(_arr[i].next != nullptr)
+        if(_arr[i].data != nullptr)
         {
-            iter = _arr[i].next;
-            while(iter != nullptr)
+            std::cout << _arr[i].data << " [";
+            if(_arr[i].next != nullptr)
             {
-                std::cout << iter -> data << std::endl;
-                iter = iter -> next;
+                iter = _arr[i].next;
+                while(iter != nullptr)
+                {
+                    std::cout << iter -> data << ", ";
+                    iter = iter -> next;
+                }
             }
+            std::cout << "]" << std::endl;
         }
     }
+}
+
+int openvac::Vocabulary::hash(int key, int b) const
+{
+    return key % b;
+}
+
+int openvac::Vocabulary::getKey(const char * data) const
+{
+    int key = 0;
+    for (int i = 0; i < strlen(data); ++i)
+    {
+        key += data[i];
+    }
+    return key;
+}
+
+bool openvac::Vocabulary::searchArEl(int cl) const
+{
+    return _arr[cl].data != nullptr;
+}
+
+openvac::node * openvac::Vocabulary::add_to_list(node * head, const char * x)
+{
+    node * temp = new node(x, head);
+    return temp;
+}
+
+openvac::node * openvac::Vocabulary::searchClassEl(node * head, const char * x) const
+{
+    node * temp = head -> next;
+    node * prev = head;
+    while (temp != nullptr)
+    {
+        if(strcmp(temp -> data, x) == 0)
+            return prev;
+        temp = temp -> next;
+        prev = prev -> next;
+    }
+    return nullptr;
 }

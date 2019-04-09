@@ -42,9 +42,13 @@ int main()
     std::cout << std::endl;
     //bg.PRINT();
     gg.DELETE("AnnJon");
+    gg.PRINT();
+    std::cout << std::endl;
     gg.DELETE("GoLone");
     //gg.DELETE("GoGO");
     gg.PRINT();
+    std::cout << "MEMBER(BobBern): " << gg.MEMBER("BobBern") << std::endl;
+    std::cout << "MEMBER(GoLone): " << gg.MEMBER("GoLone") << std::endl;
 
 return 0;
 }

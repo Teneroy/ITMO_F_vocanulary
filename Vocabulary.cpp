@@ -11,7 +11,7 @@ openvac::Vocabulary::~Vocabulary()
 
 void openvac::Vocabulary::MAKENULL()
 {
-    //DeleteArr
+    deleteArr();
 }
 
 void openvac::Vocabulary::DELETE(const char * x)
@@ -58,19 +58,17 @@ void openvac::Vocabulary::DELETE(const char * x)
 
 void openvac::Vocabulary::INSERT(const char * x)
 {
-    //std::cout << "{source start: " << x << "}" << std::endl;
     int B = SIZE / 2; //повтор код????
     int key = getKey(x);
     int hs = hash(key, B);
-    std::cout << "{source: " << x << "}, {key: " << key << "}, {B: " << B << "}, " << "{hash: " << hs << "}" << std::endl;
+    //std::cout << "{source: " << x << "}, {key: " << key << "}, {B: " << B << "}, " << "{hash: " << hs << "}" << std::endl;
     if(searchArEl(hs))
     {
+        if(strcmp(_arr[hs].data, x) == 0)
+            return;
         if(_arr[hs].next != nullptr)
         {
-            if(strcmp(_arr[hs].next -> data, x) == 0)
-                return;
-            node * temp = searchClassEl(_arr[hs].next, x);
-            if(temp != nullptr)
+            if(existListEl(hs, x))
                 return;
         }
         _arr[hs].next = add_to_list(_arr[hs].next, x);
@@ -80,6 +78,23 @@ void openvac::Vocabulary::INSERT(const char * x)
     strcpy(_arr[hs].data, x);
 }
 
+bool openvac::Vocabulary::MEMBER(const char * x) const
+{
+    int B = SIZE / 2; //повтор код????
+    int key = getKey(x);
+    int hs = hash(key, B);
+    if(searchArEl(hs))
+    {
+        if(strcmp(_arr[hs].data, x) == 0)
+            return true;
+        if(_arr[hs].next != nullptr)
+        {
+            return existListEl(hs, x);
+        }
+    }
+    return false;
+}
+
 void openvac::Vocabulary::PRINT() const
 {
     node * iter;
@@ -87,7 +102,7 @@ void openvac::Vocabulary::PRINT() const
     {
         if(_arr[i].data != nullptr)
         {
-            std::cout << _arr[i].data << " [";
+            std::cout << "{" << i << "} " << _arr[i].data << " [";
             if(_arr[i].next != nullptr)
             {
                 iter = _arr[i].next;
@@ -117,6 +132,16 @@ int openvac::Vocabulary::getKey(const char * data) const
     return key;
 }
 
+bool openvac::Vocabulary::existListEl(int hs, const char * x) const
+{
+    if(strcmp(_arr[hs].next -> data, x) == 0)//Отдельная функция возможно
+        return true;
+    node * temp = searchClassEl(_arr[hs].next, x);
+    if(temp != nullptr)
+        return true;
+    return false;
+}
+
 bool openvac::Vocabulary::searchArEl(int cl) const
 {
     return _arr[cl].data != nullptr;
@@ -140,4 +165,34 @@ openvac::node * openvac::Vocabulary::searchClassEl(node * head, const char * x) 
         prev = prev -> next;
     }
     return nullptr;
+}
+
+void openvac::Vocabulary::deleteArr()
+{
+    int i = 0;
+    for(; i < SIZE; i++)
+    {
+        if(_arr[i].data != nullptr)
+        {
+            if(_arr[i].next != nullptr)
+            {
+                _arr[i].next = deleteList(_arr[i].next);
+            }
+            delete[] _arr[i].data;
+        }
+    }
+}
+
+openvac::node * openvac::Vocabulary::deleteList(node * head)
+{
+    node * temp1;
+    node * temp2 = head;
+    while (temp2 != nullptr)
+    {
+        temp1 = temp2;
+        temp2 = temp2 -> next;
+        delete temp1;
+    }
+    head = nullptr;
+    return head;
 }

@@ -16,7 +16,6 @@ void openvac::Vocabulary::MAKENULL()
 
 void openvac::Vocabulary::DELETE(const char * x)
 {
-    int B = SIZE / 2; //повтор код????
     int key = getKey(x);
     int hs = hash(key, B);
     if(!searchArEl(hs))
@@ -58,10 +57,8 @@ void openvac::Vocabulary::DELETE(const char * x)
 
 void openvac::Vocabulary::INSERT(const char * x)
 {
-    int B = SIZE / 2; //повтор код????
     int key = getKey(x);
     int hs = hash(key, B);
-    //std::cout << "{source: " << x << "}, {key: " << key << "}, {B: " << B << "}, " << "{hash: " << hs << "}" << std::endl;
     if(searchArEl(hs))
     {
         if(strcmp(_arr[hs].data, x) == 0)
@@ -80,7 +77,6 @@ void openvac::Vocabulary::INSERT(const char * x)
 
 bool openvac::Vocabulary::MEMBER(const char * x) const
 {
-    int B = SIZE / 2; //повтор код????
     int key = getKey(x);
     int hs = hash(key, B);
     if(searchArEl(hs))
@@ -137,9 +133,7 @@ bool openvac::Vocabulary::existListEl(int hs, const char * x) const
     if(strcmp(_arr[hs].next -> data, x) == 0)//Отдельная функция возможно
         return true;
     node * temp = searchClassEl(_arr[hs].next, x);
-    if(temp != nullptr)
-        return true;
-    return false;
+    return temp != nullptr;
 }
 
 bool openvac::Vocabulary::searchArEl(int cl) const

@@ -11,7 +11,7 @@
 //словарь открытое хеширование
 namespace openvac
 {
-    enum  {SIZE = 20};
+    enum  {SIZE = 20, B = SIZE/2};
     struct node
     {
         char * data;

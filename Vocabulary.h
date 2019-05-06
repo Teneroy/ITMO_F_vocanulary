@@ -11,7 +11,7 @@
 //словарь открытое хеширование
 namespace openvac
 {
-    enum  {SIZE = 20, B = SIZE/2};
+    enum  {SIZE = 20/*размер массива*/, B = SIZE/2 /*количество классов*/};
     struct node
     {
         char * data;
@@ -26,6 +26,10 @@ namespace openvac
             data = new char[20];
             strcpy(data, d);
         }
+//        ~node()
+//        {
+//            delete[] data;
+//        }
     };
 
 
@@ -33,23 +37,23 @@ namespace openvac
     {
     public:
         //Нуже ли конструктор по умолчанию?
-        ~Vocabulary();//НАДО ЛИ ПЕРЕГРУЖАТЬ ДЕСТРУКТОР?????
-        void MAKENULL(); //Удаляем сначала next, потом сам массив, проверка на пустоту словаря
-        void INSERT(const char * x); //добавляем, если такой элемент уже существует(detectClass и скорее всего searchSame), то пишем в next
-        void DELETE(const char * x); //Вызываем функцию поиска и удаляем элемент, если элемент в массиве, то первый элемент next перекачует в массив
-        void PRINT() const; //
-        bool MEMBER(const char * x) const;//определяем принадлежит ли элемент множеству
+        ~Vocabulary();
+        void MAKENULL(); //Чистим весь массив
+        void INSERT(const char * x); //Добавляем элемент. Если такой элемент уже существует, то пишем в next
+        void DELETE(const char * x); //Вызываем функцию поиска и удаляем элемент. Если элемент в массиве, то первый элемент next перекачует в массив
+        void PRINT() const; //Вывод словаря
+        bool MEMBER(const char * x) const;//Определяем принадлежит ли элемент множеству
     private:
         node _arr[SIZE];
-        void deleteArr(); //Удаляем сначала next, потом сам массив
+        void deleteArr(); //Удаляем сначала next, потом data
         int hash(int key, int b) const; //хеширование key%b
         int getKey(const char * data) const; //Суммирует коды символов в строке
-        // функция поиска
-        bool existListEl(int hs, const char * x) const; //Cуществует ли элемент в списке
-        bool searchArEl(int cl) const; //возвращаем true, если в class есть какое то значение
-        node * searchClassEl(node * head, const char * x) const; //ищем в списке next значение data, сравнивая строки(если есть, вернуть указатель, если нет, то nullptr)
-        node * add_to_list(node * head, const char * x);
-        node * deleteList(node * head);
+        bool existListEl(int hs, const char * x) const; //Существует ли элемент в списке
+        bool searchArEl(int cl) const; //Возвращаем true, если в классе есть какое то значение
+        node * searchClassEl(node * head, const char * x) const; //Ищем в списке next значение data(кроме головы), сравнивая строки(если есть, вернуть указатель на предыдущий элемент, если нет, то nullptr)
+        node * add_to_list(node * head, const char * x); //Добавляем элемент в начало списка
+        node * deleteList(node * head); //Чистим список
+        void deleteHead(int hs);//Удаляем голову списка класса
     };
 }
 

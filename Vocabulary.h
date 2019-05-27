@@ -26,10 +26,6 @@ namespace openvac
             data = new char[20];
             strcpy(data, d);
         }
-//        ~node()
-//        {
-//            delete[] data;
-//        }
     };
 
 
@@ -58,5 +54,38 @@ namespace openvac
 }
 
 //в закрытом хешировании сравнить первый элемент с пустым символом
+
+namespace closevac
+{
+    enum  {SIZE = 50/*размер массива*/, ERR = -1/*Константа ошибки, возвращаем, когда не нашли элемент в массиве*/};
+    struct node
+    {
+        char * data;
+        node()
+        {
+            data = nullptr;
+        }
+    };
+
+
+    class Vocabulary
+    {
+    public:
+        //Нуже ли конструктор по умолчанию?
+        ~Vocabulary();
+        void MAKENULL(); //Чистим весь массив
+        void INSERT(const char * x); //Добавляем элемент. Если такой элемент уже существует, то повторно хешируем
+        void DELETE(const char * x); //Вызываем функцию поиска и удаляем элемент
+        void PRINT() const; //Вывод словаря
+        bool MEMBER(const char * x) const;//Определяем принадлежит ли элемент множеству
+    private:
+        node _arr[SIZE];
+        int hash(int key, int iter) const; //хеширование (key + iter) % SIZE
+        int getKey(const char * data) const; //Суммирует коды символов в строке
+        int getFreePos(int key, int iter) const; //Получить позицию  для вставкки, путем повторного хеширования
+        int searchEl(const char * x, int key, int iter) const; //Поиск элемента, если не нашли, вернуть ERR
+        void deleteArr();//Чистим весь массив
+    };
+}
 
 #endif //ITMO_F_VOCANULARY_VOCABULARY_H

@@ -2,7 +2,7 @@
 // Created by alexc on 4/2/2019.
 //
 #include "Vocabulary.h"
-using namespace openvac;
+using namespace closevac;
 
 void READFILE(const char * filename, Vocabulary & ob)
 {
@@ -20,20 +20,17 @@ void READFILE(const char * filename, Vocabulary & ob)
         }
         myReadFile.close();
     }
+    std::cout << "_____________________________" << std::endl;
 }
 
 int main()
 {
     Vocabulary gg;
     Vocabulary bg;
-    char fname[256];
-    //std::cin >> fname;
-    READFILE("C:\\Users\\alexc\\YandexDisk\\ITMO_F_vocanulary\\data.txt", gg);
-    //bg.READFILE("C:\\Users\\alexc\\YandexDisk\\ITMO_F_vocanulary\\data2.txt");
+    READFILE("C:\\Users\\Teneroy\\YandexDisk\\ITMO_F_vocanulary\\data.txt", gg);
     gg.PRINT();
     bg.INSERT("IvanIvanovich");
     std::cout << std::endl;
-    //bg.PRINT();
     bg.INSERT("IvanovichIvan");
     bg.INSERT("IvanIvanovich");
     bg.INSERT("PavelZuzev");
@@ -49,6 +46,6 @@ int main()
     gg.PRINT();
     std::cout << "MEMBER(BobBern): " << gg.MEMBER("BobBern") << std::endl;
     std::cout << "MEMBER(GoLone): " << gg.MEMBER("GoLone") << std::endl;
-
+    std::cout << "MEMBER(GoLone): " << gg.MEMBER("123") << std::endl;
 return 0;
 }

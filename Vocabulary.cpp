@@ -193,7 +193,7 @@ openvac::node * openvac::Vocabulary::deleteList(node * head)
     {
         temp1 = temp2;
         temp2 = temp2 -> next;
-        //delete[] temp1 -> data;
+        delete[] temp1 -> data;
         delete temp1;
     }
     head = nullptr;
@@ -206,4 +206,131 @@ void openvac::Vocabulary::deleteHead(int hs)
     node * temp = _arr[hs].next;
     _arr[hs].next = _arr[hs].next -> next;
     delete temp;
+}
+
+
+/*____Закрытое хеширование____*/
+
+closevac::Vocabulary::~Vocabulary()
+{
+    deleteArr();
+}
+
+void closevac::Vocabulary::MAKENULL()
+{
+    deleteArr();
+}
+
+void closevac::Vocabulary::INSERT(const char * x)
+{
+    int key = getKey(x);
+    int hs = hash(key, 0);
+    if(_arr[hs].data == nullptr)
+    {
+        _arr[hs].data = new char[20]; //отдельная функция?
+        strcpy(_arr[hs].data, x);
+        return;
+    }
+    int fp = getFreePos(key, 0);
+    if(_arr[fp].data == nullptr)
+        _arr[fp].data = new char[20]; //отдельная функция?
+    strcpy(_arr[fp].data, x);
+}
+
+void closevac::Vocabulary::DELETE(const char * x)
+{
+    int key = getKey(x);
+    int hs = hash(key, 0);
+    if(_arr[hs].data == nullptr)
+        return;
+    if(strcmp(_arr[hs].data, x) == 0)
+    {
+        _arr[hs].data[0] = '\0';
+        return;
+    }
+    //запуск ф-и поиска
+    int search = searchEl(x, key, 0);
+    if(search != ERR)
+        _arr[search].data[0] = '\0';
+}
+
+bool closevac::Vocabulary::MEMBER(const char * x) const
+{
+    int key = getKey(x);
+    int hs = hash(key, 0);
+    if(_arr[hs].data == nullptr)
+        return false;
+    if(strcmp(_arr[hs].data, x) == 0)
+    {
+        return true;
+    }
+    //запуск ф-и поиска
+    int search = searchEl(x, key, 0);
+    return search != ERR;
+}
+
+int closevac::Vocabulary::searchEl(const char * x, int key, int iter) const
+{
+    iter++;
+    int hs = hash(key, iter);
+    if(_arr[hs].data == nullptr)
+        return ERR;
+    if(_arr[hs].data[0] == '\0')
+        return searchEl(x, key, iter);
+    if(strcmp(_arr[hs].data, x) == 0)
+    {
+        return hs;
+    } else
+    {
+        return searchEl(x, key, iter);
+    }
+}
+
+int closevac::Vocabulary::hash(int key, int iter) const
+{
+    return (key + iter) % SIZE;
+}
+
+int closevac::Vocabulary::getKey(const char * data) const
+{
+    int i = 0;
+    int key = 0;
+    for(; i < strlen(data); i++)
+    {
+        key += data[i];
+    }
+    return key;
+}
+
+int closevac::Vocabulary::getFreePos(int key, int iter) const
+{
+    iter++;
+    int hs = hash(key, iter);
+    if(_arr[hs].data != nullptr)
+    {
+        if(_arr[hs].data[0] == '\0')
+        {
+            return hs;
+        }
+        hs = getFreePos(key, iter);
+    }
+    return hs;
+}
+
+void closevac::Vocabulary::deleteArr()
+{
+    int i = 0;
+    for(; i < SIZE; i++)
+    {
+        delete[] _arr[i].data; // Удаляем данные из ячейки
+    }
+}
+
+void closevac::Vocabulary::PRINT() const
+{
+    int i = 0;
+    for(; i < SIZE; i++)
+    {
+        std::cout << "{" << i << "}: " << ((_arr[i].data != nullptr && _arr[i].data[0] != '\0') ? _arr[i].data : "*") << std::endl;
+    }
 }

@@ -27,7 +27,7 @@ int main()
 {
     Vocabulary gg;
     Vocabulary bg;
-    READFILE("C:\\Users\\Teneroy\\YandexDisk\\ITMO_F_vocanulary\\data.txt", gg);
+    READFILE("C:\\users\\alexc\\YandexDisk\\ITMO_F_vocanulary\\data.txt", gg);
     gg.PRINT();
     bg.INSERT("IvanIvanovich");
     std::cout << std::endl;

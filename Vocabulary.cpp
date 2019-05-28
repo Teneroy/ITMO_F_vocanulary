@@ -232,9 +232,12 @@ void closevac::Vocabulary::INSERT(const char * x)
         return;
     }
     int fp = getFreePos(key, 0);
-    if(_arr[fp].data == nullptr)
-        _arr[fp].data = new char[20]; //отдельная функция?
-    strcpy(_arr[fp].data, x);
+    if(fp == ERR)
+    {
+        if(_arr[fp].data == nullptr)
+            _arr[fp].data = new char[20]; //отдельная функция?
+        strcpy(_arr[fp].data, x);
+    }
 }
 
 void closevac::Vocabulary::DELETE(const char * x)
@@ -275,15 +278,24 @@ int closevac::Vocabulary::searchEl(const char * x, int key, int iter) const
     int hs = hash(key, iter);
     if(_arr[hs].data == nullptr)
         return ERR;
-    if(_arr[hs].data[0] == '\0')
-        return searchEl(x, key, iter);
-    if(strcmp(_arr[hs].data, x) == 0)
+    while (_arr[hs].data[0] == '\0' || strcmp(_arr[hs].data, x) != 0)
     {
-        return hs;
-    } else
-    {
-        return searchEl(x, key, iter);
+        iter++;
+        hs = hash(key, iter);
+        if(_arr[hs].data == nullptr)
+            return ERR;
     }
+    return hs;
+
+//    if(_arr[hs].data[0] == '\0')
+//        return searchEl(x, key, iter);
+//    if(strcmp(_arr[hs].data, x) == 0)
+//    {
+//        return hs;
+//    } else
+//    {
+//        return searchEl(x, key, iter);
+//    }
 }
 
 int closevac::Vocabulary::hash(int key, int iter) const
@@ -304,15 +316,15 @@ int closevac::Vocabulary::getKey(const char * data) const
 
 int closevac::Vocabulary::getFreePos(int key, int iter) const
 {
+    int check = hash(key, 0);
     iter++;
     int hs = hash(key, iter);
-    if(_arr[hs].data != nullptr)
+    while(_arr[hs].data != nullptr && _arr[hs].data[0] != '\0')
     {
-        if(_arr[hs].data[0] == '\0')
-        {
-            return hs;
-        }
-        hs = getFreePos(key, iter);
+        iter++;
+        hs = hash(key, iter);
+        if(hs == check)
+            return ERR;
     }
     return hs;
 }

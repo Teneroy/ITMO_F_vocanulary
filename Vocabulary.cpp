@@ -231,13 +231,20 @@ void closevac::Vocabulary::INSERT(const char * x)
         strcpy(_arr[hs].data, x);
         return;
     }
-    int fp = getFreePos(key, 0);
-    if(fp == ERR)
+    int check = hs;
+    int iter = 0;
+    while(_arr[hs].data != nullptr && _arr[hs].data[0] != '\0')
     {
-        if(_arr[fp].data == nullptr)
-            _arr[fp].data = new char[20]; //отдельная функция?
-        strcpy(_arr[fp].data, x);
+        if(strcmp(_arr[hs].data, x) == 0)
+            return;
+        iter++;
+        hs = hash(key, iter);
+        if(hs == check)
+            return;
     }
+    if(_arr[hs].data == nullptr)
+        _arr[hs].data = new char[20]; //отдельная функция?
+    strcpy(_arr[hs].data, x);
 }
 
 void closevac::Vocabulary::DELETE(const char * x)

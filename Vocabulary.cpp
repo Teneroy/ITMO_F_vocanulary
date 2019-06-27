@@ -43,16 +43,15 @@ void openvac::Vocabulary::DELETE(const char * x)
         return;
     } else
     {
+        
+        delete[] _arr[hs].data; //Удаляем данные
+        _arr[hs].data = nullptr;
         if(_arr[hs].next != nullptr) //Если список класса не пуст
         {
             node * next = _arr[hs].next;
             _arr[hs].data = next -> data;
             _arr[hs].next = next -> next;
-            return;
         }
-        delete[] _arr[hs].data; //Удаляем данные
-        _arr[hs].data = nullptr;
-        return;
     }
 }
 

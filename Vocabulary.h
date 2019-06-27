@@ -41,7 +41,7 @@ namespace openvac
         bool MEMBER(const char * x) const;//Определяем принадлежит ли элемент множеству
     private:
         node _arr[SIZE];
-        void deleteArr(); //Удаляем сначала next, потом data
+        void deleteArr(node * arr); //Удаляем сначала next, потом data
         int hash(int key, int b) const; //хеширование key%b
         int getKey(const char * data) const; //Суммирует коды символов в строке
         bool existListEl(int hs, const char * x) const; //Существует ли элемент в списке
@@ -49,7 +49,7 @@ namespace openvac
         node * searchClassEl(node * head, const char * x) const; //Ищем в списке next значение data(кроме головы), сравнивая строки(если есть, вернуть указатель на предыдущий элемент, если нет, то nullptr)
         node * add_to_list(node * head, const char * x); //Добавляем элемент в начало списка
         node * deleteList(node * head); //Чистим список
-        void deleteHead(int hs);//Удаляем голову списка класса
+        //void deleteHead(int hs);//Удаляем голову списка класса
     };
 }
 

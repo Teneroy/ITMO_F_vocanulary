@@ -2,7 +2,7 @@
 // Created by alexc on 4/2/2019.
 //
 #include "Vocabulary.h"
-using namespace closevac;
+using namespace openvac;
 
 void READFILE(const char * filename, Vocabulary & ob)
 {
@@ -28,6 +28,8 @@ int main()
     Vocabulary gg;
     Vocabulary bg;
     READFILE("C:\\ITMO_F_vocanulary\\data.txt", gg);
+    gg.PRINT();
+    gg.DELETE("asx");
     gg.PRINT();
     bg.INSERT("IvanIvanovich");
     std::cout << std::endl;

@@ -6,13 +6,13 @@
 
 openvac::Vocabulary::~Vocabulary()
 {
-    deleteArr();
+    deleteArr(_arr);
 }
 
 //Чистим весь массив
 void openvac::Vocabulary::MAKENULL()
 {
-    deleteArr();
+    deleteArr(_arr);
 }
 
 //Вызываем функцию поиска и удаляем элемент. Если элемент в массиве, то первый элемент next перекачует в массив
@@ -35,21 +35,24 @@ void openvac::Vocabulary::DELETE(const char * x)
             node * cur = temp -> next;
             temp -> next = cur -> next;
             delete cur;
-        } else
-        {
-            deleteHead(hs); // Удаляем голову списка класса
+            return;
         }
+        temp = _arr[hs].next;
+        _arr[hs].next = _arr[hs].next -> next;
+        delete temp; // Удаляем голову списка класса
+        return;
     } else
     {
         if(_arr[hs].next != nullptr) //Если список класса не пуст
         {
-            strcpy(_arr[hs].data, _arr[hs].next -> data); // Копируем данные из головы списка в массив
-            deleteHead(hs);// Удаляем голову списка класса
-        } else
-        {
-            delete[] _arr[hs].data; //Удаляем данные
-            _arr[hs].data = nullptr;
+            node * next = _arr[hs].next;
+            _arr[hs].data = next -> data;
+            _arr[hs].next = next -> next;
+            return;
         }
+        delete[] _arr[hs].data; //Удаляем данные
+        _arr[hs].data = nullptr;
+        return;
     }
 }
 
@@ -168,18 +171,18 @@ openvac::node * openvac::Vocabulary::searchClassEl(node * head, const char * x) 
 }
 
 //Удаляем сначала next, потом data
-void openvac::Vocabulary::deleteArr()
+void openvac::Vocabulary::deleteArr(node * arr)
 {
     int i = 0;
     for(; i < SIZE; i++)
     {
-        if(_arr[i].data != nullptr) //Если класс не пустой
+        if(arr[i].data != nullptr) //Если класс не пустой
         {
-            if(_arr[i].next != nullptr) //Если список класса не пустой
+            if(arr[i].next != nullptr) //Если список класса не пустой
             {
-                _arr[i].next = deleteList(_arr[i].next); //Удаляем список
+                arr[i].next = deleteList(arr[i].next); //Удаляем список
             }
-            delete[] _arr[i].data; // Удаляем данные из ячейки
+            delete[] arr[i].data; // Удаляем данные из ячейки
         }
     }
 }
@@ -200,13 +203,12 @@ openvac::node * openvac::Vocabulary::deleteList(node * head)
     return head;
 }
 
-//Удаляем голову списка класса
-void openvac::Vocabulary::deleteHead(int hs)
-{
-    node * temp = _arr[hs].next;
-    _arr[hs].next = _arr[hs].next -> next;
-    delete temp;
-}
+//void openvac::Vocabulary::deleteHead(int hs)
+//{
+//    node * temp = _arr[hs].next;
+//    _arr[hs].next = _arr[hs].next -> next;
+//    delete temp;
+//}
 
 
 /*____Закрытое хеширование____*/

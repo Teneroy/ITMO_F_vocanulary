@@ -34,16 +34,18 @@ void openvac::Vocabulary::DELETE(const char * x)
                 return;
             node * cur = temp -> next;
             temp -> next = cur -> next;
+            delete [] cur -> data;
             delete cur;
             return;
         }
         temp = _arr[hs].next;
         _arr[hs].next = _arr[hs].next -> next;
+        delete [] temp -> data;
         delete temp; // Удаляем голову списка класса
         return;
     } else
     {
-        
+
         delete[] _arr[hs].data; //Удаляем данные
         _arr[hs].data = nullptr;
         if(_arr[hs].next != nullptr) //Если список класса не пуст
@@ -51,6 +53,7 @@ void openvac::Vocabulary::DELETE(const char * x)
             node * next = _arr[hs].next;
             _arr[hs].data = next -> data;
             _arr[hs].next = next -> next;
+            delete next;
         }
     }
 }
@@ -234,18 +237,23 @@ void closevac::Vocabulary::INSERT(const char * x)
     }
     int check = hs;
     int iter = 0;
-    while(_arr[hs].data != nullptr && _arr[hs].data[0] != '\0')
+    int free = -1;
+    while(_arr[hs].data != nullptr)
     {
+        if(_arr[hs].data[0] == '\0')
+            free = hs;
         if(strcmp(_arr[hs].data, x) == 0)
             return;
         iter++;
         hs = hash(key, iter);
         if(hs == check)
-            return;
+            break;
     }
-    if(_arr[hs].data == nullptr)
-        _arr[hs].data = new char[20]; //отдельная функция?
-    strcpy(_arr[hs].data, x);
+    if(free == -1)
+        free = hs;
+    if(_arr[free].data == nullptr)
+        _arr[free].data = new char[20]; //отдельная функция?
+    strcpy(_arr[free].data, x);
 }
 
 void closevac::Vocabulary::DELETE(const char * x)
@@ -294,16 +302,6 @@ int closevac::Vocabulary::searchEl(const char * x, int key, int iter) const
             return ERR;
     }
     return hs;
-
-//    if(_arr[hs].data[0] == '\0')
-//        return searchEl(x, key, iter);
-//    if(strcmp(_arr[hs].data, x) == 0)
-//    {
-//        return hs;
-//    } else
-//    {
-//        return searchEl(x, key, iter);
-//    }
 }
 
 int closevac::Vocabulary::hash(int key, int iter) const
